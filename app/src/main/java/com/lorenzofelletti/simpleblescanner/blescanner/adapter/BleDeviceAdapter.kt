@@ -6,12 +6,24 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lorenzofelletti.simpleblescanner.R
+import com.lorenzofelletti.simpleblescanner.blescanner.listener.OnClickItemAdapterListener
 import com.lorenzofelletti.simpleblescanner.blescanner.model.BleDevice
 
 /**
  * Adapter for the RecyclerView that shows the found BLE devices.
  */
-class BleDeviceAdapter(private val devices: List<BleDevice>) : RecyclerView.Adapter<BleDeviceAdapter.ViewHolder>() {
+class BleDeviceAdapter(
+    val onClickItemAdapterListener: OnClickItemAdapterListener? = null
+) : RecyclerView.Adapter<BleDeviceAdapter.ViewHolder>() {
+
+    private val devices: MutableList<BleDevice> = mutableListOf()
+
+    fun addList(getDeviceList: MutableList<BleDevice>) {
+        devices.clear()
+        devices.addAll(getDeviceList)
+        notifyDataSetChanged()
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val deviceNameTextView: TextView = itemView.findViewById(R.id.device_name)
     }
@@ -26,7 +38,10 @@ class BleDeviceAdapter(private val devices: List<BleDevice>) : RecyclerView.Adap
     override fun onBindViewHolder(holder: BleDeviceAdapter.ViewHolder, position: Int) {
         val device = devices[position]
         val textView = holder.deviceNameTextView
-        textView.text = device.name
+        textView.text = device.name + " " + device.address
+        holder.itemView.setOnClickListener {
+            onClickItemAdapterListener?.clickItem(position, device)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -3,7 +3,10 @@ package com.lorenzofelletti.simpleblescanner.blescanner.model
 /**
  * A class that represents a BLE device.
  */
-data class BleDevice(val name: String) {
+data class BleDevice(
+    val name: String,
+    val address: String
+) {
     companion object {
         fun createBleDevicesList(): MutableList<BleDevice> {
             return mutableListOf()
